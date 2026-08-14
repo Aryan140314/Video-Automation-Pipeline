@@ -1,0 +1,2 @@
+# Models directory
+# Model weights are downloaded dynamically via TTS Studio Model Manager to %LOCALAPPDATA%\TTS-Studio\models\

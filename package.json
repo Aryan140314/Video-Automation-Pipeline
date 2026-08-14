@@ -1,0 +1,18 @@
+{
+  "name": "tts-studio-desktop",
+  "version": "1.0.0",
+  "description": "TTS Studio Zero-Shot Neural Voice Cloning Desktop Application",
+  "main": "electron/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "start": "npx electron .",
+    "electron:dev": "npx electron .",
+    "build:installer": "npx electron-builder --config electron-builder.json"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

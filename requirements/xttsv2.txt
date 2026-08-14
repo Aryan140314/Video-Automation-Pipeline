@@ -1,0 +1,8 @@
+# XTTS-v2 Isolated Requirements (.venv_xtts)
+TTS==0.22.0
+torch==2.1.2
+torchaudio==2.1.2
+transformers==4.35.2
+deepspeed
+scipy
+numpy<2.0.0

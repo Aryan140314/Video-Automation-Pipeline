@@ -1,0 +1,6 @@
+# OmniVoice Isolated Requirements
+torch>=2.1.0
+torchaudio>=2.1.0
+k2
+lhotse
+onnxruntime

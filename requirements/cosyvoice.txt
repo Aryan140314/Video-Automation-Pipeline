@@ -1,0 +1,8 @@
+# CosyVoice 3 Isolated Requirements
+torch>=2.1.0
+torchaudio>=2.1.0
+cosyvoice
+matcha-tts
+conformer
+inflect
+diffusers

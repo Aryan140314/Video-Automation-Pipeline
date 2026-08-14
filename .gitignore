@@ -1,0 +1,96 @@
+# ============================================================
+# TTS Studio — Git Ignore Configuration
+# ============================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*/__pycache__/
+*/**/__pycache__/
+
+# Distribution / packaging
+build/
+dist/
+dist/installer/
+dist/backend_dist/
+frontend/dist/
+*.egg-info/
+.eggs/
+eggs/
+*.egg
+MANIFEST
+
+# PyInstaller output
+*.manifest
+*.spec.bak
+
+# Python Virtual Environments (Main and isolated model runtimes)
+.venv/
+.venv*/
+venv/
+env/
+ENV/
+.venv_cosyvoice/
+.venv_fishspeech/
+.venv_indextts2/
+.venv_omnivoice/
+.venv_xtts/
+
+# Node.js / NPM / Vite dependencies and cache
+node_modules/
+frontend/node_modules/
+.npm/
+.vite/
+*.tsbuildinfo
+
+# Large Model Checkpoint Weights (downloaded dynamically via Model Manager)
+models/**/*.pt
+models/**/*.pth
+models/**/*.bin
+models/**/*.safetensors
+models/**/*.onnx
+models/**/*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.ckpt
+
+# Generated audio outputs (preserve benchmark metrics & structure)
+outputs/**/*.wav
+outputs/**/*.mp3
+outputs/**/*.flac
+outputs/**/*.ogg
+outputs/*.wav
+outputs/*.mp3
+outputs/*.flac
+outputs/*.ogg
+!outputs/synthesis_benchmark.csv
+!outputs/.gitkeep
+
+# Local App Runtime, Cache, and Logs
+cache/*
+!cache/.gitkeep
+logs/*
+!logs/.gitkeep
+runtimes/*
+!runtimes/.gitkeep
+*.log
+
+# Partial downloads
+*.part
+*.download
+*.tmp
+
+# OS & Editor Specific Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.gemini/
+*.bak
+*.swp
+*~

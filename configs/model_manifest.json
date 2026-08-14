@@ -1,0 +1,151 @@
+{
+  "version": "1.0.0",
+  "models": {
+    "f5tts": {
+      "id": "f5tts",
+      "name": "F5-TTS",
+      "repo_id": "SWivid/F5-TTS",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "F5TTS_Base/model_1200000.pt",
+          "url": "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_Base/model_1200000.pt",
+          "size_bytes": 1280000000
+        },
+        {
+          "rel_path": "F5TTS_Base/vocab.txt",
+          "url": "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_Base/vocab.txt",
+          "size_bytes": 13426
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": true,
+      "runtime": "main",
+      "expected_size_gb": 1.28,
+      "description": "Flow-matching zero-shot voice cloning model (DiT architecture)"
+    },
+    "chatterbox": {
+      "id": "chatterbox",
+      "name": "Chatterbox Turbo",
+      "repo_id": "ResembleAI/chatterbox",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "chatterbox_turbo.pt",
+          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/chatterbox_turbo.pt",
+          "size_bytes": 1181116000
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": true,
+      "runtime": "main",
+      "expected_size_gb": 1.10,
+      "description": "Diffusion-based zero-shot voice cloning model"
+    },
+    "fishspeech": {
+      "id": "fishspeech",
+      "name": "Fish Speech S2",
+      "repo_id": "fishaudio/fish-speech-1.5",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
+          "url": "https://huggingface.co/fishaudio/fish-speech-1.5/resolve/main/firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
+          "size_bytes": 188518579
+        },
+        {
+          "rel_path": "model.safetensors",
+          "url": "https://huggingface.co/fishaudio/fish-speech-1.5/resolve/main/model.safetensors",
+          "size_bytes": 2400000000
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": false,
+      "runtime": "isolated",
+      "venv_name": ".venv_fishspeech",
+      "expected_size_gb": 2.50,
+      "description": "Dual LLM + VQ-GAN zero-shot voice cloning engine"
+    },
+    "omnivoice": {
+      "id": "omnivoice",
+      "name": "OmniVoice",
+      "repo_id": "k2-fsa/omnivoice",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "model.safetensors",
+          "url": "https://huggingface.co/k2-fsa/omnivoice/resolve/main/model.safetensors",
+          "size_bytes": 1500000000
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": true,
+      "runtime": "isolated",
+      "venv_name": ".venv_omnivoice",
+      "expected_size_gb": 1.50,
+      "description": "Transducer flow-matching speech synthesis model"
+    },
+    "cosyvoice": {
+      "id": "cosyvoice",
+      "name": "CosyVoice 3",
+      "repo_id": "FunAudioLLM/CosyVoice-300M",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "cosyvoice.pt",
+          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/cosyvoice.pt",
+          "size_bytes": 1800000000
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": true,
+      "runtime": "isolated",
+      "venv_name": ".venv_cosyvoice",
+      "expected_size_gb": 2.20,
+      "description": "FunAudioLLM zero-shot multilingual synthesis engine"
+    },
+    "xttsv2": {
+      "id": "xttsv2",
+      "name": "XTTS-v2",
+      "repo_id": "coqui/XTTS-v2",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "model.pth",
+          "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/model.pth",
+          "size_bytes": 1750000000
+        },
+        {
+          "rel_path": "config.json",
+          "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/config.json",
+          "size_bytes": 3120
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": true,
+      "runtime": "isolated",
+      "venv_name": ".venv_xtts",
+      "expected_size_gb": 1.80,
+      "description": "Coqui GPT-2 zero-shot multi-speaker cloning backend"
+    },
+    "indextts2": {
+      "id": "indextts2",
+      "name": "IndexTTS2",
+      "repo_id": "IndexTeam/IndexTTS-2.5",
+      "source_type": "huggingface",
+      "files": [
+        {
+          "rel_path": "indextts_v2.pt",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/indextts_v2.pt",
+          "size_bytes": 1950000000
+        }
+      ],
+      "gpu_supported": true,
+      "cpu_supported": true,
+      "runtime": "isolated",
+      "venv_name": ".venv_indextts2",
+      "expected_size_gb": 2.00,
+      "description": "IndexTTS multi-emotion zero-shot synthesis model"
+    }
+  }
+}

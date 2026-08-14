@@ -1,0 +1,37 @@
+{
+  "appId": "com.ttsstudio.app",
+  "productName": "TTS Studio",
+  "electronVersion": "34.1.0",
+  "copyright": "Copyright © 2026 TTS Studio Team",
+  "directories": {
+    "output": "dist/installer",
+    "buildResources": "build"
+  },
+  "files": [
+    "electron/**/*",
+    "frontend/dist/**/*",
+    "backend/**/*",
+    "scripts/**/*",
+    "voices/**/*",
+    "configs/**/*",
+    "dist/backend_dist/**/*"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "TTS Studio",
+    "uninstallDisplayName": "TTS Studio",
+    "deleteAppDataOnUninstall": false
+  }
+}

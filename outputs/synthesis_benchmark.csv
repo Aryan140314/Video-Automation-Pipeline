@@ -1,0 +1,5 @@
+timestamp,model_id,model_name,backend,cloning_active,gen_time_s,audio_duration_s,rtf,file_size_kb,device,status,output_path
+2026-08-13T18:36:00.204215,f5tts,F5-TTS,f5tts-clone,True,124.016,10.84,11.4406,508.04,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626236.wav
+2026-08-13T18:40:39.877745,f5tts,F5-TTS,f5tts-clone,True,4.284,10.84,0.3952,508.04,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626635.wav
+2026-08-13T18:41:12.863092,f5tts,F5-TTS,f5tts-clone,True,4.107,7.22,0.3788,338.71,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626655.wav
+2026-08-13T18:41:26.551767,f5tts,F5-TTS,f5tts-clone,True,4.122,10.84,0.3803,508.04,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626682.wav
