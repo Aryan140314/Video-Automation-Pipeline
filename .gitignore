@@ -12,9 +12,6 @@ __pycache__/
 
 # Distribution / packaging
 build/
-dist/
-dist/installer/
-dist/backend_dist/
 frontend/dist/
 *.egg-info/
 .eggs/
