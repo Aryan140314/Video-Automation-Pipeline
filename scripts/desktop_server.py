@@ -66,6 +66,24 @@ def _check_is_model_downloaded(model_id: str) -> bool:
             return True
         return False
 
+    if model_id == "fishspeech":
+        if os.path.exists(model_dir) and len(glob.glob(os.path.join(model_dir, "**", "*.pth"), recursive=True)) > 0:
+            return True
+        return False
+
+    if model_id == "omnivoice":
+        if os.path.exists(model_dir) and os.path.exists(os.path.join(model_dir, "config.json")):
+            return True
+        return False
+
+    if model_id == "cosyvoice":
+        if os.path.exists(model_dir) and len(os.listdir(model_dir)) > 2:
+            return True
+        cosy_rt = os.path.join(WORKSPACE_ROOT, "runtimes", "CosyVoice")
+        if os.path.exists(cosy_rt) and len(os.listdir(cosy_rt)) > 5:
+            return True
+        return False
+
     if model_id == "xttsv2":
         # Check in AppData models/xttsv2 dir
         if os.path.exists(model_dir) and os.path.exists(os.path.join(model_dir, "model.pth")):
@@ -73,6 +91,11 @@ def _check_is_model_downloaded(model_id: str) -> bool:
         # Also check local TTS cache
         tts_cache = os.path.join(os.environ.get("LOCALAPPDATA", ""), "tts")
         if os.path.exists(tts_cache) and len(glob.glob(os.path.join(tts_cache, "**", "model.pth"), recursive=True)) > 0:
+            return True
+        return False
+
+    if model_id == "indextts2":
+        if os.path.exists(model_dir) and len(os.listdir(model_dir)) > 2:
             return True
         return False
 
@@ -131,6 +154,45 @@ def _background_download_worker(model_id: str):
                 _DOWNLOAD_STATE[model_id]["percent"] = 100
                 _DOWNLOAD_STATE[model_id]["status"] = "READY"
 
+        elif model_id == "fishspeech":
+            from huggingface_hub import snapshot_download
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 30
+            print(f"[Downloader] Downloading Fish Speech S2 to: {target_dir}...", flush=True)
+            snapshot_download(
+                repo_id="fishaudio/fish-speech-1.5",
+                local_dir=target_dir
+            )
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 100
+                _DOWNLOAD_STATE[model_id]["status"] = "READY"
+
+        elif model_id == "omnivoice":
+            from huggingface_hub import snapshot_download
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 30
+            print(f"[Downloader] Downloading OmniVoice to: {target_dir}...", flush=True)
+            snapshot_download(
+                repo_id="k2-fsa/OmniVoice",
+                local_dir=target_dir
+            )
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 100
+                _DOWNLOAD_STATE[model_id]["status"] = "READY"
+
+        elif model_id == "cosyvoice":
+            from huggingface_hub import snapshot_download
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 30
+            print(f"[Downloader] Downloading CosyVoice 3 to: {target_dir}...", flush=True)
+            snapshot_download(
+                repo_id="FunAudioLLM/CosyVoice-300M",
+                local_dir=target_dir
+            )
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 100
+                _DOWNLOAD_STATE[model_id]["status"] = "READY"
+
         elif model_id == "xttsv2":
             from huggingface_hub import snapshot_download
             with _DOWNLOAD_LOCK:
@@ -138,6 +200,19 @@ def _background_download_worker(model_id: str):
             print(f"[Downloader] Downloading XTTS-v2 to: {target_dir}...", flush=True)
             snapshot_download(
                 repo_id="coqui/XTTS-v2",
+                local_dir=target_dir
+            )
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 100
+                _DOWNLOAD_STATE[model_id]["status"] = "READY"
+
+        elif model_id == "indextts2":
+            from huggingface_hub import snapshot_download
+            with _DOWNLOAD_LOCK:
+                _DOWNLOAD_STATE[model_id]["percent"] = 30
+            print(f"[Downloader] Downloading IndexTTS 2.5 to: {target_dir}...", flush=True)
+            snapshot_download(
+                repo_id="IndexTeam/IndexTTS-2.5",
                 local_dir=target_dir
             )
             with _DOWNLOAD_LOCK:
@@ -193,7 +268,7 @@ class DesktopServerHandler(BaseHTTPRequestHandler):
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
 
-        # 3. Available Models (F5-TTS, Chatterbox Turbo, XTTS-v2)
+        # 3. Available Models (All 7 Models)
         if path == "/api/models":
             models = [
                 {
@@ -217,14 +292,54 @@ class DesktopServerHandler(BaseHTTPRequestHandler):
                     "isDownloaded": _check_is_model_downloaded("chatterbox")
                 },
                 {
+                    "id": "fishspeech",
+                    "name": "Fish Speech S2",
+                    "architecture": "DualAR LLM + DAC",
+                    "description": "High-fidelity dual autoregressive acoustic neural vocoder for expressive zero-shot cloning.",
+                    "maxWords": 60,
+                    "recommended": False,
+                    "tag": "Rich Dynamics",
+                    "isDownloaded": _check_is_model_downloaded("fishspeech")
+                },
+                {
+                    "id": "omnivoice",
+                    "name": "OmniVoice",
+                    "architecture": "Flow Transformer",
+                    "description": "527-layer transducer flow-matching speech synthesis with deep contextual inflections.",
+                    "maxWords": 60,
+                    "recommended": False,
+                    "tag": "Deep Inflection",
+                    "isDownloaded": _check_is_model_downloaded("omnivoice")
+                },
+                {
+                    "id": "cosyvoice",
+                    "name": "CosyVoice 3",
+                    "architecture": "FunAudioLLM 300M",
+                    "description": "Multilingual zero-shot neural synthesis engine with emotional nuance control.",
+                    "maxWords": 80,
+                    "recommended": False,
+                    "tag": "Multilingual 300M",
+                    "isDownloaded": _check_is_model_downloaded("cosyvoice")
+                },
+                {
                     "id": "xttsv2",
                     "name": "XTTS-v2",
                     "architecture": "Coqui Multi-Speaker GPT",
-                    "description": "Robust multi-lingual autoregressive voice cloner with deep expressive range.",
+                    "description": "Robust multi-lingual autoregressive voice cloner with 17+ languages support.",
                     "maxWords": 60,
                     "recommended": False,
                     "tag": "Multilingual",
                     "isDownloaded": _check_is_model_downloaded("xttsv2")
+                },
+                {
+                    "id": "indextts2",
+                    "name": "IndexTTS 2.5",
+                    "architecture": "GPT + BigVGAN",
+                    "description": "UnifiedVoice GPT multi-emotion zero-shot synthesis with BigVGAN neural vocoder.",
+                    "maxWords": 60,
+                    "recommended": False,
+                    "tag": "Expressive",
+                    "isDownloaded": _check_is_model_downloaded("indextts2")
                 }
             ]
             return self._send_json(200, {"models": models})

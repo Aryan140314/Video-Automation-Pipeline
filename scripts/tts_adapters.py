@@ -261,6 +261,34 @@ def _run_isolated_subprocess(
             except Exception as err:
                 print(f"[{model_name}] Subprocess communication error: {err}")
 
+    # Fallback to direct one-shot CLI execution if persistent daemon is unavailable or failed
+    if not subprocess_success:
+        venv_python = _PROCESS_MANAGER._resolve_python(venv_name)
+        runner_script = _PROCESS_MANAGER._resolve_script(runner_name)
+        if os.path.exists(venv_python) and os.path.exists(runner_script):
+            try:
+                cmd = [
+                    venv_python, runner_script,
+                    "--text", text,
+                    "--ref_audio", ref_wav if ref_wav else "",
+                    "--output_path", output_path
+                ]
+                print(f"[{model_name}] Executing one-shot runner: {venv_python} {runner_script}")
+                env = os.environ.copy()
+                env["PYTHONHASHSEED"] = "0"
+                env["PYTHONUNBUFFERED"] = "1"
+                env["PYTHONIOENCODING"] = "utf-8"
+                p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace", timeout=180, env=env)
+                if os.path.exists(output_path) and os.path.getsize(output_path) > 1000:
+                    subprocess_success = True
+                    backend_used = f"{model_id}-native"
+                else:
+                    print(f"[{model_name}] CLI runner stdout: {p.stdout.strip()[:300]}")
+                    if p.stderr:
+                        print(f"[{model_name}] CLI runner stderr: {p.stderr.strip()[:300]}")
+            except Exception as cli_err:
+                print(f"[{model_name}] CLI runner exception: {cli_err}")
+
     gen_time = round(time.time() - start_t, 4)
     duration = 0.0
     file_size_kb = 0.0
@@ -346,6 +374,62 @@ class ChatterboxAdapter(TTSModelAdapter):
         )
 
 
+class FishSpeechAdapter(TTSModelAdapter):
+    def __init__(self):
+        super().__init__("Fish Speech S2", "fishspeech", default_max_words=60)
+
+    def load_model(self):
+        return None
+
+    def prepare_text(self, text: str) -> str:
+        from speech_synth_helper import preprocess_tts_text
+        return preprocess_tts_text(text)
+
+    def get_safe_chunk_size(self) -> int:
+        return 60
+
+    def generate(self, text: str, reference_voice: str | None, output_path: str, progress_callback=None) -> dict:
+        text = self.prepare_text(text)
+        return _run_isolated_subprocess(
+            self.model_id,
+            ".venv_fishspeech",
+            "isolated_fishspeech_runner.py",
+            text,
+            reference_voice,
+            output_path,
+            self.model_name,
+            self.get_device()
+        )
+
+
+class OmniVoiceAdapter(TTSModelAdapter):
+    def __init__(self):
+        super().__init__("OmniVoice", "omnivoice", default_max_words=60)
+
+    def load_model(self):
+        return None
+
+    def prepare_text(self, text: str) -> str:
+        from speech_synth_helper import preprocess_tts_text
+        return preprocess_tts_text(text)
+
+    def get_safe_chunk_size(self) -> int:
+        return 60
+
+    def generate(self, text: str, reference_voice: str | None, output_path: str, progress_callback=None) -> dict:
+        text = self.prepare_text(text)
+        return _run_isolated_subprocess(
+            self.model_id,
+            ".venv_omnivoice",
+            "isolated_omnivoice_runner.py",
+            text,
+            reference_voice,
+            output_path,
+            self.model_name,
+            self.get_device()
+        )
+
+
 class CosyVoiceAdapter(TTSModelAdapter):
     def __init__(self):
         super().__init__("CosyVoice 3", "cosyvoice", default_max_words=80)
@@ -402,6 +486,34 @@ class XTTSv2Adapter(TTSModelAdapter):
         )
 
 
+class IndexTTS2Adapter(TTSModelAdapter):
+    def __init__(self):
+        super().__init__("IndexTTS 2.5", "indextts2", default_max_words=60)
+
+    def load_model(self):
+        return None
+
+    def prepare_text(self, text: str) -> str:
+        from speech_synth_helper import preprocess_tts_text
+        return preprocess_tts_text(text)
+
+    def get_safe_chunk_size(self) -> int:
+        return 60
+
+    def generate(self, text: str, reference_voice: str | None, output_path: str, progress_callback=None) -> dict:
+        text = self.prepare_text(text)
+        return _run_isolated_subprocess(
+            self.model_id,
+            ".venv_indextts2",
+            "isolated_indextts2_runner.py",
+            text,
+            reference_voice,
+            output_path,
+            self.model_name,
+            self.get_device()
+        )
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Model Adapter Factory & Registry Singleton
 # ─────────────────────────────────────────────────────────────────────────────
@@ -409,8 +521,11 @@ class XTTSv2Adapter(TTSModelAdapter):
 _ADAPTER_REGISTRY = {
     "f5tts": F5TTSAdapter(),
     "chatterbox": ChatterboxAdapter(),
+    "fishspeech": FishSpeechAdapter(),
+    "omnivoice": OmniVoiceAdapter(),
     "cosyvoice": CosyVoiceAdapter(),
     "xttsv2": XTTSv2Adapter(),
+    "indextts2": IndexTTS2Adapter(),
 }
 
 def get_adapter(model_id: str) -> TTSModelAdapter:
@@ -420,3 +535,4 @@ def get_adapter(model_id: str) -> TTSModelAdapter:
         if key == clean_id or key == model_id.lower():
             return adapter
     return _ADAPTER_REGISTRY["f5tts"]
+

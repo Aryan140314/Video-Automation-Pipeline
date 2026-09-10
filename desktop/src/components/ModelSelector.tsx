@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Check, Download, Flame, Globe2, Loader2, Radio, Zap } from 'lucide-react'
+import { Check, Download, Flame, Globe2, Loader2, Radio, Zap, Sparkles, Cpu, Layers } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useStudioStore } from '@/store/useStudioStore'
 import { fetchModels, downloadModelWeights, fetchDownloadProgress } from '@/api/ttsApi'
@@ -80,6 +80,36 @@ export const ModelSelector: React.FC = () => {
       isDownloaded: false
     },
     {
+      id: 'fishspeech',
+      name: 'Fish Speech S2',
+      architecture: 'DualAR LLM + DAC',
+      description: 'High-fidelity dual autoregressive acoustic neural vocoder for expressive zero-shot cloning.',
+      maxWords: 60,
+      recommended: false,
+      tag: 'Rich Dynamics',
+      isDownloaded: false
+    },
+    {
+      id: 'omnivoice',
+      name: 'OmniVoice',
+      architecture: 'Flow Transformer',
+      description: '527-layer transducer flow-matching speech synthesis with deep contextual inflections.',
+      maxWords: 60,
+      recommended: false,
+      tag: 'Deep Inflection',
+      isDownloaded: false
+    },
+    {
+      id: 'cosyvoice',
+      name: 'CosyVoice 3',
+      architecture: 'FunAudioLLM 300M',
+      description: 'Multilingual zero-shot neural synthesis engine with emotional nuance control.',
+      maxWords: 80,
+      recommended: false,
+      tag: 'Multilingual 300M',
+      isDownloaded: false
+    },
+    {
       id: 'xttsv2',
       name: 'XTTS-v2',
       architecture: 'Coqui Multi-Speaker GPT',
@@ -88,8 +118,60 @@ export const ModelSelector: React.FC = () => {
       recommended: false,
       tag: 'Multilingual',
       isDownloaded: false
+    },
+    {
+      id: 'indextts2',
+      name: 'IndexTTS 2.5',
+      architecture: 'GPT + BigVGAN',
+      description: 'UnifiedVoice GPT multi-emotion zero-shot synthesis with BigVGAN neural vocoder.',
+      maxWords: 60,
+      recommended: false,
+      tag: 'Expressive',
+      isDownloaded: false
     }
   ]
+
+  const getModelIcon = (id: string) => {
+    switch (id) {
+      case 'f5tts':
+        return <Flame className="w-4 h-4 text-amber-400" />
+      case 'chatterbox':
+        return <Zap className="w-4 h-4 text-cyan-400" />
+      case 'fishspeech':
+        return <Sparkles className="w-4 h-4 text-violet-400" />
+      case 'omnivoice':
+        return <Layers className="w-4 h-4 text-rose-400" />
+      case 'cosyvoice':
+        return <Globe2 className="w-4 h-4 text-blue-400" />
+      case 'xttsv2':
+        return <Globe2 className="w-4 h-4 text-emerald-400" />
+      case 'indextts2':
+        return <Cpu className="w-4 h-4 text-yellow-400" />
+      default:
+        return <Zap className="w-4 h-4 text-indigo-400" />
+    }
+  }
+
+  const getTagColor = (id: string) => {
+    switch (id) {
+      case 'f5tts':
+        return 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+      case 'chatterbox':
+        return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
+      case 'fishspeech':
+        return 'bg-violet-500/20 text-violet-300 border-violet-500/30'
+      case 'omnivoice':
+        return 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+      case 'cosyvoice':
+        return 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+      case 'xttsv2':
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+      case 'indextts2':
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
+      default:
+        return 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30'
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -98,10 +180,10 @@ export const ModelSelector: React.FC = () => {
           <Radio className="w-3.5 h-3.5 text-indigo-400" />
           <span>Select Neural TTS Engine</span>
         </label>
-        <span className="text-[11px] text-slate-500 font-mono">3 Local Neural Models</span>
+        <span className="text-[11px] text-slate-500 font-mono">{models.length} Neural Models</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
         {models.map((model) => {
           const isSelected = selectedModel === model.id
           const isDownloading = downloadingModelId === model.id
@@ -131,21 +213,13 @@ export const ModelSelector: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-base text-white">{model.name}</h3>
-                    {model.id === 'f5tts' && <Flame className="w-4 h-4 text-amber-400" />}
-                    {model.id === 'chatterbox' && <Zap className="w-4 h-4 text-cyan-400" />}
-                    {model.id === 'xttsv2' && <Globe2 className="w-4 h-4 text-emerald-400" />}
+                    {getModelIcon(model.id)}
                   </div>
                   <span className="text-[11px] font-mono text-indigo-300/90">{model.architecture}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                    model.id === 'f5tts'
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : model.id === 'chatterbox'
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                      : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  }`}>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${getTagColor(model.id)}`}>
                     {model.tag}
                   </span>
                   {isSelected && (

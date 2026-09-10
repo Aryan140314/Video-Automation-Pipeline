@@ -94,8 +94,11 @@ st.sidebar.markdown("## ⚙️ TTS Studio Settings")
 model_options = {
     "F5-TTS (DiT Flow Matching)": "f5tts",
     "Chatterbox Turbo (Fast Diffusion)": "chatterbox",
-    # "CosyVoice 3 (FunAudioLLM 300M)": "cosyvoice",  # Hidden (can be enabled later)
+    "Fish Speech S2 (DualAR LLM + DAC)": "fishspeech",
+    "OmniVoice (527-Layer Flow Transformer)": "omnivoice",
+    "CosyVoice 3 (FunAudioLLM 300M)": "cosyvoice",
     "XTTS-v2 (Coqui Voice Cloner)": "xttsv2",
+    "IndexTTS 2.5 (UnifiedVoice GPT + BigVGAN)": "indextts2",
 }
 
 selected_model_name = st.sidebar.selectbox(
