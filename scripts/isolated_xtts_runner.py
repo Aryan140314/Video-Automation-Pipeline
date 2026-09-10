@@ -7,6 +7,22 @@ import wave
 import torch
 import transformers.pytorch_utils
 
+# Set up path resolver for consistent voice/model path resolution
+_SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+try:
+    from path_resolver import configure_hf_environment, get_default_voice_path
+    configure_hf_environment()
+except Exception:
+    def get_default_voice_path():
+        return None
+
+if torch.cuda.is_available():
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
 if not hasattr(transformers.pytorch_utils, 'isin_mps_friendly'):
     def isin_mps_friendly(elements, test_elements):
         return torch.isin(elements, test_elements)
@@ -30,32 +46,24 @@ import TTS.tts.models.xtts
 TTS.tts.models.xtts.load_audio = custom_load_audio
 
 def main():
-    parser = argparse.ArgumentParser(description="XTTS-v2 Isolated Subprocess Runner")
-    parser.add_argument("--text", type=str, required=True, help="Text to synthesize")
-    parser.add_argument("--ref_audio", type=str, default="", help="Reference speaker audio WAV")
-    parser.add_argument("--output_path", type=str, required=True, help="Output WAV file path")
-    args = parser.parse_args()
-
-    start_time = time.time()
-    os.makedirs(os.path.dirname(os.path.abspath(args.output_path)), exist_ok=True)
-
     try:
         from huggingface_hub import snapshot_download
         from TTS.tts.configs.xtts_config import XttsConfig
         from TTS.tts.models.xtts import Xtts
 
-        appdata = os.environ.get("LOCALAPPDATA", r"C:\Users\aryan\AppData\Local")
-        model_dir = os.path.join(appdata, "TTS-Studio", "models", "xtts_v2")
+        appdata = os.environ.get("LOCALAPPDATA", os.path.join(os.path.expanduser("~"), "AppData", "Local"))
+        model_dir = os.path.join(appdata, "TTS-Studio", "models", "xttsv2")
         os.makedirs(model_dir, exist_ok=True)
 
-        if not os.path.isfile(os.path.join(model_dir, 'config.json')):
-            for attempt in range(10):
-                try:
-                    snapshot_download(repo_id='coqui/XTTS-v2', local_dir=model_dir, ignore_patterns=['*.git*'])
-                    if os.path.exists(os.path.join(model_dir, 'config.json')):
-                        break
-                except Exception as e:
-                    time.sleep(3)
+        config_path = os.path.join(model_dir, 'config.json')
+        model_path = os.path.join(model_dir, 'model.pth')
+        if not os.path.isfile(config_path) or not os.path.isfile(model_path):
+            sys.stdout.write(json.dumps({"error": f"XTTS-v2 weights not found: {model_dir}"}) + "\n")
+            sys.stdout.flush()
+            sys.exit(1)
+
+        sys.stdout.write("LOADING\n")
+        sys.stdout.flush()
 
         config = XttsConfig()
         config.load_json(os.path.join(model_dir, "config.json"))
@@ -65,48 +73,81 @@ def main():
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model.to(device)
 
-        ref_voice = args.ref_audio if args.ref_audio and os.path.exists(args.ref_audio) else r'E:\TTS\voices\Narration\deep_male_narrator.wav'
-        gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(audio_path=[ref_voice])
+        sys.stdout.write("READY\n")
+        sys.stdout.flush()
 
-        out = model.inference(
-            text=args.text,
-            language="en",
-            gpt_cond_latent=gpt_cond_latent,
-            speaker_embedding=speaker_embedding,
-            temperature=0.7,
-        )
+        while True:
+            line = sys.stdin.readline()
+            if not line:
+                break
+            
+            try:
+                req = json.loads(line)
+            except Exception:
+                continue
 
-        sf.write(args.output_path, out["wav"], 24000)
+            text = req.get("text", "")
+            ref_audio = req.get("ref_audio", "")
+            output_path = req.get("output_path", "")
 
-        gen_time = round(time.time() - start_time, 4)
-        duration = 0.0
-        if os.path.exists(args.output_path):
-            with wave.open(args.output_path, "r") as wf:
-                duration = round(wf.getnframes() / float(wf.getframerate()), 2)
-        file_size_kb = round(os.path.getsize(args.output_path) / 1024, 2)
-        rtf = round(gen_time / max(duration, 0.1), 4)
+            start_time = time.time()
+            os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
-        result = {
-            "model": "xttsv2",
-            "backend": "xttsv2-native",
-            "cloning_active": bool(args.ref_audio),
-            "gen_time": gen_time,
-            "duration": duration,
-            "rtf": rtf,
-            "file_size_kb": file_size_kb,
-            "output_path": args.output_path,
-            "device": device
-        }
-        print(json.dumps(result))
-    except Exception as e:
-        err_res = {
-            "model": "xttsv2",
-            "backend": "xttsv2-error",
-            "error": str(e),
-            "gen_time": round(time.time() - start_time, 4),
-            "output_path": args.output_path
-        }
-        print(json.dumps(err_res))
+            try:
+                ref_voice = ref_audio if ref_audio and os.path.exists(ref_audio) else None
+                if not ref_voice:
+                    # Bug 1.4 fix: use path_resolver instead of fragile relative navigation
+                    ref_voice = get_default_voice_path()
+
+                gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(audio_path=[ref_voice])
+
+                out = model.inference(
+                    text=text,
+                    language="en",
+                    gpt_cond_latent=gpt_cond_latent,
+                    speaker_embedding=speaker_embedding,
+                    temperature=0.7,
+                )
+
+                sf.write(output_path, out["wav"], 24000)
+
+                gen_time = round(time.time() - start_time, 4)
+                duration = 0.0
+                if os.path.exists(output_path):
+                    with wave.open(output_path, "r") as wf:
+                        duration = round(wf.getnframes() / float(wf.getframerate()), 2)
+                file_size_kb = round(os.path.getsize(output_path) / 1024, 2)
+                rtf = round(gen_time / max(duration, 0.1), 4)
+
+                result = {
+                    "model": "xttsv2",
+                    "backend": "xttsv2-native",
+                    "cloning_active": bool(ref_audio),
+                    "gen_time": gen_time,
+                    "duration": duration,
+                    "rtf": rtf,
+                    "file_size_kb": file_size_kb,
+                    "output_path": output_path,
+                    "device": device
+                }
+                sys.stdout.write(json.dumps(result) + "\n")
+                sys.stdout.flush()
+                
+            except Exception as e:
+                err_res = {
+                    "model": "xttsv2",
+                    "backend": "xttsv2-error",
+                    "error": str(e),
+                    "gen_time": round(time.time() - start_time, 4),
+                    "output_path": output_path
+                }
+                sys.stdout.write(json.dumps(err_res) + "\n")
+                sys.stdout.flush()
+
+    except Exception as fatal_e:
+        err_res = {"error": f"Fatal runner error: {str(fatal_e)}"}
+        sys.stdout.write(json.dumps(err_res) + "\n")
+        sys.stdout.flush()
         sys.exit(1)
 
 if __name__ == "__main__":

@@ -94,11 +94,8 @@ st.sidebar.markdown("## ⚙️ TTS Studio Settings")
 model_options = {
     "F5-TTS (DiT Flow Matching)": "f5tts",
     "Chatterbox Turbo (Fast Diffusion)": "chatterbox",
-    "Fish Speech S2 (DualAR LLM + DAC)": "fishspeech",
-    "OmniVoice (Flow Transformer)": "omnivoice",
-    "CosyVoice 3 (FunAudioLLM 300M)": "cosyvoice",
+    # "CosyVoice 3 (FunAudioLLM 300M)": "cosyvoice",  # Hidden (can be enabled later)
     "XTTS-v2 (Coqui Voice Cloner)": "xttsv2",
-    "IndexTTS 2.5 (GPT + BigVGAN)": "indextts2",
 }
 
 selected_model_name = st.sidebar.selectbox(
@@ -114,12 +111,13 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("### 🗣️ Speaker Reference Voice")
 voices_dir = get_voices_dir()
 
-# Discover voice WAV files
-wav_files = glob.glob(os.path.join(voices_dir, "**", "*.wav"), recursive=True)
+# Discover voice files across all audio formats
+audio_exts = ("*.wav", "*.mp3", "*.flac", "*.ogg", "*.m4a", "*.aac")
 voice_map = {}
-for wav_p in wav_files:
-    rel_name = os.path.relpath(wav_p, voices_dir).replace("\\", "/")
-    voice_map[rel_name] = wav_p
+for ext in audio_exts:
+    for audio_p in glob.glob(os.path.join(voices_dir, "**", ext), recursive=True):
+        rel_name = os.path.relpath(audio_p, voices_dir).replace("\\", "/")
+        voice_map[rel_name] = audio_p
 
 if not voice_map:
     # Add fallback default reference
@@ -135,7 +133,7 @@ selected_voice_label = st.sidebar.selectbox(
 selected_voice_path = voice_map.get(selected_voice_label)
 
 if selected_voice_path and os.path.exists(selected_voice_path):
-    st.sidebar.audio(selected_voice_path, format="audio/wav")
+    st.sidebar.audio(selected_voice_path)
     st.sidebar.caption(f"📁 `{os.path.basename(selected_voice_path)}`")
 
 st.sidebar.markdown("---")

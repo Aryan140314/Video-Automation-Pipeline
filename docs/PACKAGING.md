@@ -64,24 +64,36 @@ The installer binary explicitly excludes:
 
 ## 4. Build Instructions
 
-### Step 1: Build Front-End React Assets
+### Method A: Modern React + Vite Desktop Suite (`desktop/`)
 ```powershell
+# 1. Install dependencies
+cd e:\TTS\desktop
+npm install
+
+# 2. Build React assets & Electron bundle
+npm run build
+
+# 3. Build Production Windows Installer
+npm run electron:build
+```
+Output Installer Path: `e:\TTS\desktop\release\TTS Studio Setup 1.0.0.exe`
+
+---
+
+### Method B: Classic Packaging Workflow (`frontend/` + PyInstaller)
+```powershell
+# 1. Build Front-End React Assets
 cd e:\TTS\frontend
 npm run build
-```
 
-### Step 2: Package Standalone Backend Executable
-```powershell
+# 2. Package Standalone Backend Executable
 cd e:\TTS
 .\.venv\Scripts\python.exe -m PyInstaller pyinstaller.spec
-```
 
-### Step 3: Package Windows Desktop Installer
-```powershell
+# 3. Package Windows Desktop Installer
 cd e:\TTS
 npx electron-builder --config electron-builder.json
 ```
-
 Output Installer Path: `e:\TTS\dist\installer\TTS Studio Setup.exe`
 
 ---

@@ -1,0 +1,40 @@
+{
+  "appId": "com.ttsstudio.desktop",
+  "productName": "TTS Studio",
+  "directories": {
+    "output": "release-v4"
+  },
+  "files": [
+    "dist",
+    "dist-electron"
+  ],
+  "extraResources": [
+    {
+      "from": "../voices",
+      "to": "voices"
+    },
+    {
+      "from": "../scripts",
+      "to": "scripts"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "dir",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "TTS Studio"
+  }
+}

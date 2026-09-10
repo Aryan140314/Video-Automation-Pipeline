@@ -132,3 +132,28 @@ To support GPUs with 6 GB VRAM (such as the RTX 3060 Laptop GPU):
 - **Single Active Model**: Only one neural model is retained in GPU VRAM at a time.
 - **Auto-Unload**: Switching active models automatically calls `torch.cuda.empty_cache()` and unloads previous model weights from memory.
 - **OOM Protection**: If requested generation exceeds available VRAM, the backend returns an `INSUFFICIENT_VRAM` error instead of crashing.
+
+---
+
+## 8. Dual Interface Architecture
+
+The platform supports two complementary front-end layers:
+
+1. **Interactive Streamlit Web Studio (`app.py`)**:
+   - High-productivity browser interface for rapid prototyping, audio waveform inspection, and generation telemetry.
+   - Communicates directly with the `tts_adapters` factory and `speech_synth_helper`.
+   - Features real-time parameter tuning (temperature, top_p, diffusion steps, speed, cross-fade).
+
+2. **Electron Desktop Application (`desktop/`)**:
+   - Modern React 18 + Vite + TypeScript + Tailwind CSS UI.
+   - Packaged with Electron for native desktop look, window frame controls, and offline capabilities.
+   - Connects to the local FastAPI server (`scripts/desktop_server.py`) over HTTP/REST.
+
+---
+
+## 9. Diagnostics & Benchmarking Infrastructure
+
+- **Hardware Detector (`scripts/hardware_detector.py`)**: Probes CUDA devices, driver versions, and VRAM availability.
+- **Synthesis Benchmark (`scripts/synthesis_benchmark.py`)**: Evaluates RTF (Real-Time Factor), generation latency, and output audio quality across all available model backends, outputting metrics to `outputs/synthesis_benchmark.csv`.
+- **Diagnostic Suites (`scripts/diag_*.py`, `scripts/test_*.py`)**: Component-level diagnostic probes verifying library imports, tokenizer pipelines, rotary embeddings, and vocoder operations.
+

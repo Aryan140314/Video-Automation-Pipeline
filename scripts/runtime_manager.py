@@ -83,7 +83,10 @@ class RuntimeManager:
 
     def get_runtime_info(self, model_id: str) -> dict:
         """Returns runtime execution details for a given model ID."""
-        info = RUNTIMES_MANIFEST.get(model_id.lower(), {
+        from path_resolver import get_isolated_venv_python, get_runtime_dir, normalize_model_id
+
+        canonical_id = normalize_model_id(model_id)
+        info = RUNTIMES_MANIFEST.get(canonical_id, {
             "runtime_type": "main",
             "venv_dir": ".venv",
             "runner_script": None,
@@ -91,19 +94,27 @@ class RuntimeManager:
             "cpu_supported": True,
         })
 
-        venv_path = os.path.join(WORKSPACE_ROOT, info["venv_dir"])
-        python_exe = os.path.join(venv_path, "Scripts", "python.exe")
-        exists = os.path.exists(python_exe) or info["runtime_type"] == "main"
+        # Use production path_resolver — NEVER use WORKSPACE_ROOT for venv paths
+        python_exe = get_isolated_venv_python(canonical_id)
+        runtime_dir = get_runtime_dir(canonical_id)
+
+        # For "main" runtime (f5tts, chatterbox), the process uses the current Python interpreter
+        if info.get("runtime_type") == "main":
+            python_exe = sys.executable
+            exists = True
+        else:
+            exists = os.path.exists(python_exe)
 
         return {
-            "model_id": model_id,
-            "runtime_type": info["runtime_type"],
-            "venv_path": venv_path,
+            "model_id": canonical_id,
+            "runtime_type": info.get("runtime_type", "main"),
+            "venv_path": runtime_dir,
             "python_exe": python_exe,
             "environment_exists": exists,
             "device": self.select_device(info),
-            "runner_script": info["runner_script"]
+            "runner_script": info.get("runner_script")
         }
+
 
     def select_device(self, runtime_info: dict) -> str:
         """Selects CUDA or CPU based on hardware probe and model capabilities."""

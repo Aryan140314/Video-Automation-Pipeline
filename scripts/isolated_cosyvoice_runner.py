@@ -10,7 +10,6 @@ import os
 import sys
 import time
 import json
-import argparse
 import wave
 import torch
 import soundfile as sf
@@ -81,69 +80,94 @@ cosyvoice.utils.file_utils.load_wav = _custom_load_wav
 
 
 def main():
-    parser = argparse.ArgumentParser(description="CosyVoice 3 Isolated Subprocess Runner")
-    parser.add_argument("--text", type=str, required=True)
-    parser.add_argument("--ref_audio", type=str, default="")
-    parser.add_argument("--output_path", type=str, required=True)
-    args = parser.parse_args()
-
-    start_time = time.time()
-    os.makedirs(os.path.dirname(os.path.abspath(args.output_path)), exist_ok=True)
-
     try:
         from cosyvoice.cli.cosyvoice import CosyVoice
 
         model_dir = r'E:\TTS\runtimes\CosyVoice\pretrained_models\CosyVoice-300M'
+        
+        sys.stdout.write("LOADING\n")
+        sys.stdout.flush()
+        
         cosyvoice_model = CosyVoice(model_dir)
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        ref_voice = (
-            args.ref_audio if args.ref_audio and os.path.exists(args.ref_audio)
-            else r'E:\TTS\voices\Narration\deep_male_narrator.wav'
-        )
-        prompt_speech_16k = _custom_load_wav(ref_voice, 16000)
+        sys.stdout.write("READY\n")
+        sys.stdout.flush()
 
-        for i, res in enumerate(cosyvoice_model.inference_zero_shot(
-            args.text,
-            'This is a prompt speaker voice.',
-            prompt_speech_16k
-        )):
-            speech = res['tts_speech'].squeeze(0).cpu().numpy()
-            sf.write(args.output_path, speech, cosyvoice_model.sample_rate)
-            break
-
-        gen_time = round(time.time() - start_time, 4)
-        duration = 0.0
-        file_size_kb = 0.0
-        if os.path.exists(args.output_path):
-            file_size_kb = round(os.path.getsize(args.output_path) / 1024, 2)
+        while True:
+            line = sys.stdin.readline()
+            if not line:
+                break
+            
             try:
-                with wave.open(args.output_path, "r") as wf:
-                    duration = round(wf.getnframes() / float(wf.getframerate()), 2)
+                req = json.loads(line)
             except Exception:
-                pass
-        rtf = round(gen_time / max(duration, 0.1), 4)
+                continue
 
-        print(json.dumps({
-            "model": "cosyvoice",
-            "backend": "cosyvoice-300m-native",
-            "cloning_active": bool(args.ref_audio),
-            "gen_time": gen_time,
-            "duration": duration,
-            "rtf": rtf,
-            "file_size_kb": file_size_kb,
-            "output_path": args.output_path,
-            "device": device
-        }))
+            text = req.get("text", "")
+            ref_audio = req.get("ref_audio", "")
+            output_path = req.get("output_path", "")
 
-    except Exception as e:
-        print(json.dumps({
-            "model": "cosyvoice",
-            "backend": "cosyvoice-error",
-            "error": str(e),
-            "gen_time": round(time.time() - start_time, 4),
-            "output_path": args.output_path
-        }))
+            start_time = time.time()
+            os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+
+            try:
+                ref_voice = (
+                    ref_audio if ref_audio and os.path.exists(ref_audio)
+                    else r'E:\TTS\voices\Narration\deep_male_narrator.wav'
+                )
+                prompt_speech_16k = _custom_load_wav(ref_voice, 16000)
+
+                for i, res in enumerate(cosyvoice_model.inference_zero_shot(
+                    text,
+                    'This is a prompt speaker voice.',
+                    prompt_speech_16k
+                )):
+                    speech = res['tts_speech'].squeeze(0).cpu().numpy()
+                    sf.write(output_path, speech, cosyvoice_model.sample_rate)
+                    break
+
+                gen_time = round(time.time() - start_time, 4)
+                duration = 0.0
+                file_size_kb = 0.0
+                if os.path.exists(output_path):
+                    file_size_kb = round(os.path.getsize(output_path) / 1024, 2)
+                    try:
+                        with wave.open(output_path, "r") as wf:
+                            duration = round(wf.getnframes() / float(wf.getframerate()), 2)
+                    except Exception:
+                        pass
+                rtf = round(gen_time / max(duration, 0.1), 4)
+
+                result = {
+                    "model": "cosyvoice",
+                    "backend": "cosyvoice-300m-native",
+                    "cloning_active": bool(ref_audio),
+                    "gen_time": gen_time,
+                    "duration": duration,
+                    "rtf": rtf,
+                    "file_size_kb": file_size_kb,
+                    "output_path": output_path,
+                    "device": device
+                }
+                sys.stdout.write(json.dumps(result) + "\n")
+                sys.stdout.flush()
+
+            except Exception as e:
+                err_res = {
+                    "model": "cosyvoice",
+                    "backend": "cosyvoice-error",
+                    "error": str(e),
+                    "gen_time": round(time.time() - start_time, 4),
+                    "output_path": output_path
+                }
+                sys.stdout.write(json.dumps(err_res) + "\n")
+                sys.stdout.flush()
+
+    except Exception as fatal_e:
+        err_res = {"error": f"Fatal runner error: {str(fatal_e)}"}
+        sys.stdout.write(json.dumps(err_res) + "\n")
+        sys.stdout.flush()
         sys.exit(1)
 
 

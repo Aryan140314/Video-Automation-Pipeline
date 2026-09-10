@@ -1,0 +1,38 @@
+﻿🚀 FIRST RUN CHECKLIST
+════════════════════════════════════════════════════════════════════
+
+BEFORE LAUNCHING:
+  ✓ Internet connection active (at least 10 Mbps recommended)
+  ✓ 30+ GB free disk space
+  ✓ Windows Defender/Antivirus allows main.exe
+  ✓ 8+ GB RAM available
+
+FIRST RUN (takes ~10 minutes):
+  ✓ Launch main.exe
+  ✓ Wait for "Initializing models..." dialog
+  ✓ Do NOT close the app during download
+  ✓ Progress bar shows: Downloading model 1/4, 2/4, etc.
+
+IF DOWNLOAD FAILS:
+  ✓ Check internet connection
+  ✓ Restart the app (auto-resume from where it stopped)
+  ✓ Try again - automatic retry (5 times max)
+
+AFTER FIRST RUN:
+  ✓ All 4 models cached locally
+  ✓ App starts in ~30 seconds
+  ✓ Fully offline - no internet needed
+
+❓ COMMON ISSUES:
+
+Q: "Download stuck at 0%"
+A: Check internet, try restart
+
+Q: "Connection dropped mid-download"
+A: Restart app - will resume automatically
+
+Q: "Not enough disk space"
+A: Free up 30+ GB and try again
+
+Q: "Antivirus blocking download"
+A: Add main.exe to antivirus whitelist

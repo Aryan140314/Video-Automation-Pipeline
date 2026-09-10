@@ -1,5 +1,13 @@
 timestamp,model_id,model_name,backend,cloning_active,gen_time_s,audio_duration_s,rtf,file_size_kb,device,status,output_path
-2026-08-13T18:36:00.204215,f5tts,F5-TTS,f5tts-clone,True,124.016,10.84,11.4406,508.04,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626236.wav
-2026-08-13T18:40:39.877745,f5tts,F5-TTS,f5tts-clone,True,4.284,10.84,0.3952,508.04,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626635.wav
-2026-08-13T18:41:12.863092,f5tts,F5-TTS,f5tts-clone,True,4.107,7.22,0.3788,338.71,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626655.wav
-2026-08-13T18:41:26.551767,f5tts,F5-TTS,f5tts-clone,True,4.122,10.84,0.3803,508.04,CUDA,SUCCESS,E:\TTS\outputs\f5tts\f5tts_out_1786626682.wav
+2026-08-14T11:38:46.332741,f5tts,F5-TTS,f5tts-clone,True,94.157,10.84,8.6861,508.04,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\f5tts\f5tts_out_1786687632.wav
+2026-08-14T11:39:05.551628,f5tts,F5-TTS,f5tts-clone,True,3.959,10.84,0.3653,508.04,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\f5tts\f5tts_out_1786687741.wav
+2026-08-14T11:39:44.109410,f5tts,F5-TTS,f5tts-clone,True,4.447,13.92,0.3195,652.54,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\f5tts\f5tts_out_1786687779.wav
+2026-08-14T11:44:30.617770,chatterbox,Chatterbox Turbo,chatterbox-clone,True,258.982,5.6,46.2468,918.83,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\chatterbox\chatterbox_out_1786687811.wav
+2026-08-14T12:09:13.982992,fishspeech,Fish Speech S2,fishspeech-failed,False,40.486,0.0,0.0,0.0,CUDA,FAILED,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\fishspeech\fishspeech_out_1786689513.wav
+2026-08-14T12:23:40.523507,fishspeech,Fish Speech S2,fishspeech-failed,False,379.925,0.0,0.0,0.0,CUDA,FAILED,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\fishspeech\fishspeech_out_1786690038.wav
+2026-08-14T12:24:14.751353,f5tts,F5-TTS,f5tts-clone,True,424.933,6.58,64.5795,308.54,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\f5tts\f5tts_out_1786690029.wav
+2026-08-14T12:24:14.776334,f5tts,F5-TTS,f5tts-clone,True,34.188,2.1,16.2798,98.54,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\f5tts\f5tts_out_1786690420.wav
+2026-08-14T12:43:29.671271,fishspeech,Fish Speech S2,fishspeech-failed,False,535.01,0.0,0.0,0.0,CUDA,FAILED,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\fishspeech\fishspeech_out_1786691072.wav
+2026-08-14T12:51:02.543204,fishspeech,Fish Speech S2,fishspeech-failed,False,382.85,0.0,0.0,0.0,CUDA,FAILED,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\fishspeech\fishspeech_out_1786691679.wav
+2026-08-14T12:51:48.373990,f5tts,F5-TTS,f5tts-clone,True,44.032,2.1,20.9678,98.54,CUDA,SUCCESS,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\f5tts\f5tts_out_1786692064.wav
+2026-08-14T13:01:48.054266,fishspeech,Fish Speech S2,fishspeech-failed,False,534.99,0.0,0.0,0.0,CUDA,FAILED,C:\Users\aryan\AppData\Local\TTS-Studio\outputs\fishspeech\fishspeech_out_1786692171.wav

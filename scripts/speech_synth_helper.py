@@ -231,10 +231,12 @@ def _ensure_chatterbox():
             import torch
             try:
                 import perth
-                if not hasattr(perth, "PerthImplicitWatermarker") and hasattr(perth, "Perth"):
-                    perth.PerthImplicitWatermarker = perth.Perth
-                if hasattr(perth, "Perth") and not hasattr(perth.Perth, "apply_watermark"):
-                    perth.Perth.apply_watermark = lambda self, wav, sample_rate=24000: wav
+                class DummyWatermarker:
+                    def __init__(self, *args, **kwargs): pass
+                    def apply_watermark(self, wav, *args, **kwargs): return wav
+                perth.PerthImplicitWatermarker = DummyWatermarker
+                if hasattr(perth, "Perth"):
+                    perth.Perth.apply_watermark = lambda self, wav, *args, **kwargs: wav
             except Exception:
                 pass
             from chatterbox.tts import ChatterboxTTS

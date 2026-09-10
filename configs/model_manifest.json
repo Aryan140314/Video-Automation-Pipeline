@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "models": {
     "f5tts": {
       "id": "f5tts",
@@ -18,6 +18,10 @@
           "size_bytes": 13426
         }
       ],
+      "required_files": [
+        "F5TTS_Base/model_1200000.pt",
+        "F5TTS_Base/vocab.txt"
+      ],
       "gpu_supported": true,
       "cpu_supported": true,
       "runtime": "main",
@@ -31,15 +35,41 @@
       "source_type": "huggingface",
       "files": [
         {
-          "rel_path": "chatterbox_turbo.pt",
-          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/chatterbox_turbo.pt",
-          "size_bytes": 1181116000
+          "rel_path": "ve.safetensors",
+          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/ve.safetensors",
+          "size_bytes": 85000000
+        },
+        {
+          "rel_path": "t3_cfg.safetensors",
+          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/t3_cfg.safetensors",
+          "size_bytes": 2129000000
+        },
+        {
+          "rel_path": "s3gen.safetensors",
+          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/s3gen.safetensors",
+          "size_bytes": 1056000000
+        },
+        {
+          "rel_path": "tokenizer.json",
+          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/tokenizer.json",
+          "size_bytes": 65000
+        },
+        {
+          "rel_path": "conds.pt",
+          "url": "https://huggingface.co/ResembleAI/chatterbox/resolve/main/conds.pt",
+          "size_bytes": 105000
         }
+      ],
+      "required_files": [
+        "ve.safetensors",
+        "t3_cfg.safetensors",
+        "s3gen.safetensors",
+        "tokenizer.json"
       ],
       "gpu_supported": true,
       "cpu_supported": true,
       "runtime": "main",
-      "expected_size_gb": 1.10,
+      "expected_size_gb": 3.1,
       "description": "Diffusion-based zero-shot voice cloning model"
     },
     "fishspeech": {
@@ -54,16 +84,30 @@
           "size_bytes": 188518579
         },
         {
-          "rel_path": "model.safetensors",
-          "url": "https://huggingface.co/fishaudio/fish-speech-1.5/resolve/main/model.safetensors",
-          "size_bytes": 2400000000
+          "rel_path": "model.pth",
+          "url": "https://huggingface.co/fishaudio/fish-speech-1.5/resolve/main/model.pth",
+          "size_bytes": 1276000000
+        },
+        {
+          "rel_path": "config.json",
+          "url": "https://huggingface.co/fishaudio/fish-speech-1.5/resolve/main/config.json",
+          "size_bytes": 2000
+        },
+        {
+          "rel_path": "special_tokens.json",
+          "url": "https://huggingface.co/fishaudio/fish-speech-1.5/resolve/main/special_tokens.json",
+          "size_bytes": 1000
         }
+      ],
+      "required_files": [
+        "firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
+        "model.pth"
       ],
       "gpu_supported": true,
       "cpu_supported": false,
       "runtime": "isolated",
       "venv_name": ".venv_fishspeech",
-      "expected_size_gb": 2.50,
+      "expected_size_gb": 1.46,
       "description": "Dual LLM + VQ-GAN zero-shot voice cloning engine"
     },
     "omnivoice": {
@@ -75,14 +119,28 @@
         {
           "rel_path": "model.safetensors",
           "url": "https://huggingface.co/k2-fsa/omnivoice/resolve/main/model.safetensors",
-          "size_bytes": 1500000000
+          "size_bytes": 2450000000
+        },
+        {
+          "rel_path": "config.json",
+          "url": "https://huggingface.co/k2-fsa/omnivoice/resolve/main/config.json",
+          "size_bytes": 2000
+        },
+        {
+          "rel_path": "tokenizer.json",
+          "url": "https://huggingface.co/k2-fsa/omnivoice/resolve/main/tokenizer.json",
+          "size_bytes": 500000
         }
+      ],
+      "required_files": [
+        "model.safetensors",
+        "config.json"
       ],
       "gpu_supported": true,
       "cpu_supported": true,
       "runtime": "isolated",
       "venv_name": ".venv_omnivoice",
-      "expected_size_gb": 1.50,
+      "expected_size_gb": 2.45,
       "description": "Transducer flow-matching speech synthesis model"
     },
     "cosyvoice": {
@@ -92,16 +150,43 @@
       "source_type": "huggingface",
       "files": [
         {
-          "rel_path": "cosyvoice.pt",
-          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/cosyvoice.pt",
-          "size_bytes": 1800000000
+          "rel_path": "cosyvoice.yaml",
+          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/cosyvoice.yaml",
+          "size_bytes": 5000
+        },
+        {
+          "rel_path": "flow.pt",
+          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/flow.pt",
+          "size_bytes": 420000000
+        },
+        {
+          "rel_path": "hift.pt",
+          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/hift.pt",
+          "size_bytes": 115000000
+        },
+        {
+          "rel_path": "llm.pt",
+          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/llm.pt",
+          "size_bytes": 1200000000
+        },
+        {
+          "rel_path": "config.json",
+          "url": "https://huggingface.co/FunAudioLLM/CosyVoice-300M/resolve/main/config.json",
+          "size_bytes": 2000
         }
       ],
+      "required_files": [
+        "cosyvoice.yaml",
+        "flow.pt",
+        "hift.pt",
+        "llm.pt"
+      ],
+      "runtime_source_dir": "CosyVoice",
       "gpu_supported": true,
       "cpu_supported": true,
       "runtime": "isolated",
       "venv_name": ".venv_cosyvoice",
-      "expected_size_gb": 2.20,
+      "expected_size_gb": 1.74,
       "description": "FunAudioLLM zero-shot multilingual synthesis engine"
     },
     "xttsv2": {
@@ -113,19 +198,44 @@
         {
           "rel_path": "model.pth",
           "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/model.pth",
-          "size_bytes": 1750000000
+          "size_bytes": 1870000000
         },
         {
           "rel_path": "config.json",
           "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/config.json",
           "size_bytes": 3120
+        },
+        {
+          "rel_path": "vocab.json",
+          "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/vocab.json",
+          "size_bytes": 800000
+        },
+        {
+          "rel_path": "dvae.pth",
+          "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/dvae.pth",
+          "size_bytes": 62000000
+        },
+        {
+          "rel_path": "mel_stats.pth",
+          "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/mel_stats.pth",
+          "size_bytes": 2000
+        },
+        {
+          "rel_path": "speakers_xtts.pth",
+          "url": "https://huggingface.co/coqui/XTTS-v2/resolve/main/speakers_xtts.pth",
+          "size_bytes": 200000
         }
+      ],
+      "required_files": [
+        "model.pth",
+        "config.json",
+        "vocab.json"
       ],
       "gpu_supported": true,
       "cpu_supported": true,
       "runtime": "isolated",
       "venv_name": ".venv_xtts",
-      "expected_size_gb": 1.80,
+      "expected_size_gb": 1.93,
       "description": "Coqui GPT-2 zero-shot multi-speaker cloning backend"
     },
     "indextts2": {
@@ -135,16 +245,53 @@
       "source_type": "huggingface",
       "files": [
         {
-          "rel_path": "indextts_v2.pt",
-          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/indextts_v2.pt",
-          "size_bytes": 1950000000
+          "rel_path": "codec.pth",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/codec.pth",
+          "size_bytes": 230000000
+        },
+        {
+          "rel_path": "config.yaml",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/config.yaml",
+          "size_bytes": 4000
+        },
+        {
+          "rel_path": "feat1.pt",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/feat1.pt",
+          "size_bytes": 210000000
+        },
+        {
+          "rel_path": "feat2.pt",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/feat2.pt",
+          "size_bytes": 210000000
+        },
+        {
+          "rel_path": "gpt.pth",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/gpt.pth",
+          "size_bytes": 3260000000
+        },
+        {
+          "rel_path": "s2mel.pth",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/s2mel.pth",
+          "size_bytes": 350000000
+        },
+        {
+          "rel_path": "wav2vec2bert_stats.pt",
+          "url": "https://huggingface.co/IndexTeam/IndexTTS-2.5/resolve/main/wav2vec2bert_stats.pt",
+          "size_bytes": 2000
         }
       ],
+      "required_files": [
+        "config.yaml",
+        "gpt.pth",
+        "s2mel.pth",
+        "codec.pth"
+      ],
+      "runtime_source_dir": "IndexTTS2",
       "gpu_supported": true,
       "cpu_supported": true,
       "runtime": "isolated",
       "venv_name": ".venv_indextts2",
-      "expected_size_gb": 2.00,
+      "expected_size_gb": 4.26,
       "description": "IndexTTS multi-emotion zero-shot synthesis model"
     }
   }

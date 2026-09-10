@@ -13,6 +13,13 @@ __pycache__/
 # Distribution / packaging
 build/
 frontend/dist/
+desktop/dist/
+desktop/dist-build/
+desktop/dist-electron/
+desktop/release/
+desktop/release-*/
+release/
+release-*/
 *.egg-info/
 .eggs/
 eggs/

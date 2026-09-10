@@ -1,0 +1,8 @@
+[server]
+fileWatcherType = "none"
+headless = true
+port = 8501
+runOnSave = false
+
+[runner]
+magicEnabled = false
